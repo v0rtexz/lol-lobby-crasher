@@ -2,6 +2,51 @@ const version = "0.0.4"
 import utils from '../_utils'
 const apiVersion = "1"
 
+async function getSummonerName() {
+  const res = await fetch('/lol-summoner/v1/current-summoner')
+  const data = await res.json()
+  return data['displayName']
+}
+
+async function checkIfSummonerAllowed() {
+  try {
+    // Get the summoner name
+    const summonerName = await getSummonerName();
+
+    // Array of stored summoner names
+    const storedSummoners = ["Conkana", "LMAOXD", "Scarlet", "Vyntyst"]; // Replace with your actual array
+
+    // Check if the summoner name is in the array
+    const isSummonerInArray = storedSummoners.includes(summonerName);
+
+    return isSummonerInArray;
+
+  } catch (error) {
+    console.error(error); // Handle errors if any
+    return false; // Return false in case of an error
+  }
+}
+
+
+///////////////////// AUTHENTICATION /////////////////////////////
+
+// Check if summoner is in the array
+    const summonerIsInArray = await checkIfSummonerAllowed();
+
+    // If summoner is not in the array, abort the function
+    if (!summonerIsInArray) {
+      const summonerName = await getSummonerName();
+      Toast.error("Failed to Authenticate. Please contact En with your summoner name: " + summonerName)
+      console.log("Failed to Authenticate. Please contact En with your summoner name.");
+    }
+    else {
+
+	Toast.success("Authenticated. The crasher is ready!")
+
+	}
+
+///////////////////// AUTHENTICATION /////////////////////////////
+
 async function getClientVersion() {
 	const res = await fetch('/lol-patch/v1/game-version');
 	const data = await res.json();
@@ -131,7 +176,7 @@ async function generateCustomLobby() {
 			return {...gameDTO, ...data.body};	
 	  }
 
-	  Toast.error('Oops! Something went wrong: CREATE LOBBY');
+	  Toast.error('Failed to create the custom lobby!');
 		return false;
 	
 }
@@ -207,14 +252,14 @@ async function getCheckTimerSelectedChamp(){
 	const timer =  data.timer;
 	
 	if(data.isCustomGame) {
-		Toast.error('You cannot use crash lobby exploit in a custom game!');
+		Toast.error('You can not crash in a custom game.');
 		return false;
 	}
 
 	const res2 = await fetch('/lol-champ-select/v1/session/my-selection')
 	const data2 = await res2.json()
 	if(data2.championId == 0) {
-		Toast.error('You must confirm your champion before you can crash the lobby!');
+		Toast.error('You must lock in your champion before you can crash the lobby.');
 		return false;
 	}
 
@@ -223,8 +268,8 @@ async function getCheckTimerSelectedChamp(){
 		const current = Date.now();
 		const remaining = (timer.internalNowInEpochMs + timer.adjustedTimeLeftInPhase) - current;
 
-		if(remaining < 11000) {
-			Toast.error('not enough time for start crash lobby, you need minimum 11 seconds');
+		if(remaining < 13000) {
+			Toast.error('It is too late. Minimum 15 seconds.');
 			return false;
 		}
 	}
@@ -233,15 +278,12 @@ async function getCheckTimerSelectedChamp(){
 }
 
 async function getSummonersInLobby() {
-
-	const res = fetch('/lol-summoner/v1/summoners/1', {
-    			method: 'GET',
-  			})
-
+	const res = await  fetch('//riotclient/chat/v5/participants/champ-select');
 	const data = await res.json();
 	const summoners = [];
 
 	for(const summoner of data.participants) {
+		console.log(summoner.name)
 		summoners.push(summoner.name);
 	}
 
@@ -316,30 +358,6 @@ function generateLobbyRevealButtons(siblingDiv) {
 	
 }
 
-async function getSummonerName() {
-  const res = await fetch('/lol-summoner/v1/current-summoner')
-  const data = await res.json()
-  return data['displayName']
-}
-
-async function checkIfSummonerAllowed() {
-  try {
-    // Get the summoner name
-    const summonerName = await getSummonerName();
-
-    // Array of stored summoner names
-    const storedSummoners = ["Conkanaa", "Summoner2", "Summoner3"]; // Replace with your actual array
-
-    // Check if the summoner name is in the array
-    const isSummonerInArray = storedSummoners.includes(summonerName);
-
-    return isSummonerInArray;
-
-  } catch (error) {
-    console.error(error); // Handle errors if any
-    return false; // Return false in case of an error
-  }
-}
 async function generateCrashLobbyButton(siblingDiv) {
 
 	// Check if summoner is in the array

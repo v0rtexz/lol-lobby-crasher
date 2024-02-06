@@ -5,7 +5,7 @@
 1. Install Pengu loader: https://pengu.lol/guide/installation
 2. Inside the Pengu Loader, go to the "Plugins" tab.
 3. On the bottom, click the "Open Folder" button.
-4. Place all the content from the zip file in there. NOT THE ZIP ITSELF!
+4. Place all the content from DELIVERY folder inside the zip file in there. NOT THE ZIP ITSELF!
 5. Click the "Refresh" button and make sure the "lobby-dropper" plugin is checked.
 
 You can find a screenshot here in the folder that got delivered, which shows how pengu should look like.
